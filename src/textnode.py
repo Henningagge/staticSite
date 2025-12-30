@@ -20,7 +20,7 @@ class TextNode():
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
 def text_node_to_html_node(text_node:TextNode):
-   print(f"{text_node.text_type}"+"hhhhhhhhhhhhhhhhhhhh")
+
    match text_node.text_type:
        case TextType.TEXT:
             leaf = LeafNode(None, text_node.text)
