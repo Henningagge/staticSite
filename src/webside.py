@@ -3,42 +3,15 @@ import os.path
 import shutil
 
 
-def makePulic():
-    path_to_check = "public"
-    if os.path.exists(path_to_check):
-        try:
-            shutil.rmtree(path_to_check)
-            os.mkdir(path_to_check)
-        except :
-            print("could not create directory")
-    else:
-        try:
-            os.mkdir(path_to_check)
-        except :
-            print("could not create directory")
-    rekusionCopy("static")
+def copy_files_recursive(source_dir_path, dest_dir_path):
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
 
-def rekusionCopy(path):
-    print(path)
-   
-    dirList = []
-    entries = os.listdir(path)
-    for entry in entries:
-        if os.path.isfile(f"{path}/{entry}"):
-            try:
-                shutil.copy(f"{path}/{entry}",f"public/{path[6:]}")
-
-            except:
-                print("error was not a file")
-
+    for filename in os.listdir(source_dir_path):
+        from_path = os.path.join(source_dir_path, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        print(f" * {from_path} -> {dest_path}")
+        if os.path.isfile(from_path):
+            shutil.copy(from_path, dest_path)
         else:
-            try:
-
-                os.mkdir(f"public/{entry}")
-            except :
-                print("could not create directory")
-            dirList.append(f"{path}/{entry}")
-    print(dirList)
-    print("!!!!!!!!!!")
-    for dirpath in dirList:
-        rekusionCopy(dirpath)
+            copy_files_recursive(from_path, dest_path)
