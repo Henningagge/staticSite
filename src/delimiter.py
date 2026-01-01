@@ -100,3 +100,42 @@ def markdown_to_blocks(markdown):
 
                 markdown2.append(stripedMarkdonw)
         return markdown2
+from enum import Enum
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    OLIST = "ordered_list"
+    ULIST = "unordered_list"
+
+def block_to_block_type(markdown):
+    heading_match = re.findall(r"^#{1,6}",markdown)
+    if heading_match == "":
+        return BlockType.HEADING
+    code_match = re.findall(r"```[^`]*```",markdown)
+    if code_match != "":
+        return BlockType.CODE
+    split_quote = markdown.split("\n")
+    is_quote = True
+    for quote in split_quote:
+        if quote[0] != ">":
+            is_quote = False
+    if is_quote == True:
+        return BlockType.QUOTE
+    is_ulist = True
+    for item in split_quote:
+        if quote[:1] != "- ":
+            is_ulist = False
+    if is_ulist == True:
+        return BlockType.ULIST
+    is_olist = True
+    for i in range(len(split_quote)):
+        if split_quote[i][:2] != f"{i+1}. ":
+            is_olist == False
+    if is_olist == True:
+        return BlockType.OLIST
+    return BlockType.PARAGRAPH
+
+
+#matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
