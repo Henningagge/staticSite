@@ -140,4 +140,7 @@ def block_to_block_type(block):
 
 
 def markdown_to_html_node(markdonw):
-    
+    blocks = markdown_to_blocks(markdonw)
+    for block in blocks:
+        blockType = block_to_block_type(block)
+        
