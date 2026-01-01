@@ -32,7 +32,7 @@ def text_node_to_html_node(text_node:TextNode):
             leaf = LeafNode("i", text_node.text)
             return leaf
        case TextType.CODE:
-            leaf = LeafNode("c", text_node.text)
+            leaf = LeafNode("code", text_node.text)
             return leaf
        case TextType.LINK:
             leaf = LeafNode("a", text_node.text,text_node.url)
