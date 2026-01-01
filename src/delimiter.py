@@ -84,10 +84,19 @@ def text_to_textnodes(text):
     delimited3 = split_nodes_delimiter(delimited2, "`", TextType.CODE)
     image1 = split_nodes_image(delimited3)
     link1 = split_nodes_link(image1)
-    print(link1)
+
     return link1
     #split nodes links(nodes)
     #split nodes images(nodes)
     #split nodes delimiter(oldnodes, delimieter, texttype)
     
-text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
+
+def markdown_to_blocks(markdown):
+        markdown2 = []
+        splited_Markdown = markdown.split("\n\n")
+        for markdonw in splited_Markdown:
+            if markdonw != "":
+                stripedMarkdonw = markdonw.strip()
+
+                markdown2.append(stripedMarkdonw)
+        return markdown2
