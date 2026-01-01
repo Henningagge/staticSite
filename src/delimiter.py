@@ -32,49 +32,53 @@ def extract_markdown_links(text):
     matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
     return matches
 def split_nodes_image(old_nodes:list[TextNode]):
-    newNode = []
+    new_nodes = []
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
-            newNode.append(node)
+            new_nodes.append(node)
             continue
-        text = node.text
-        matches = extract_markdown_images(text)
-        for match in matches:
-            text = text.replace(f"![{match[0]}]({match[1]})", "### hello ###")
-        split2 = text.split("###")
-        splitNode = []
-        count = 0
-        for i in range(len(split2)):
-            if split2[i]== " hello ":
-                splitNode.append(TextNode(matches[count][0],TextType.IMAGE, matches[count][1]))
-                count+=1
-            elif split2[i] == "":
-                continue
-            else:
-                splitNode.append(TextNode(split2[i],TextType.TEXT))
-
-        newNode.extend(splitNode)
+        original_text = node.text
+        images = extract_markdown_images(original_text)
+        if len(images) == 0:
+            new_nodes.append(node)
+            continue
+        for image in images:
+            sections = original_text.split(f"![{image[0]}]({image[1]})", 1)
+            if sections[0] != "":
+                new_nodes.append(TextNode(sections[0], TextType.TEXT))
+            new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
+            original_text = sections[1]  # Continue with the rest
         
+        if original_text != "":
+            new_nodes.append(TextNode(original_text, TextType.TEXT))
 
-    return newNode
+    return new_nodes
 def split_nodes_link(old_nodes):
-    newNode = []
+    new_nodes = []
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
-            newNode.append(node)
+            new_nodes.append(node)
             continue
-        text = node.text
-        matches = extract_markdown_links(text)
-        for match in matches:
-            text = text.replace(f"[{match[0]}]({match[1]})", "### hello ###")
-        split2 = text.split("###")
-        splitNode = []
-        count = 0
-        for i in range(len(split2)):
-            if split2[i]== " hello ":
-                splitNode.append(TextNode(matches[count],TextType.LINK))
-                count+=1
-            else:
-                splitNode.append(TextNode(split2[i],TextType.TEXT))
+        original_text = node.text
+        links = extract_markdown_links(original_text)
+        if len(links) == 0:
+            new_nodes.append(node)
+            continue
+        for link in links:
+            sections = original_text.split(f"[{link[0]}]({link[1]})", 1)
+            if sections[0] != "":
+                new_nodes.append(TextNode(sections[0], TextType.TEXT))
+            new_nodes.append(TextNode(link[0], TextType.LINK, link[1]))
+            original_text = sections[1]  # Continue with the rest
         
-        newNode.extend(splitNode)
+        if original_text != "":
+            new_nodes.append(TextNode(original_text, TextType.TEXT))
+
+    return new_nodes
+
+
+def text_to_textnodes(text):
+    #split nodes links(nodes)
+    #split nodes images(nodes)
+    #split nodes delimiter(oldnodes, delimieter, texttype)
+    pass
