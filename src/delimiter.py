@@ -78,7 +78,16 @@ def split_nodes_link(old_nodes):
 
 
 def text_to_textnodes(text):
+    node = [TextNode(text, TextType.TEXT)]
+    delimited1 = split_nodes_delimiter(node, "**",TextType.BOLD)
+    delimited2 = split_nodes_delimiter(delimited1, "_", TextType.ITALIC)
+    delimited3 = split_nodes_delimiter(delimited2, "`", TextType.CODE)
+    image1 = split_nodes_image(delimited3)
+    link1 = split_nodes_link(image1)
+    print(link1)
+    return link1
     #split nodes links(nodes)
     #split nodes images(nodes)
     #split nodes delimiter(oldnodes, delimieter, texttype)
-    pass
+    
+text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
