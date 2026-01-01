@@ -137,10 +137,60 @@ def block_to_block_type(block):
 
 
 #matches = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)",text)
-
+from htmlnode import HTMLNode
 
 def markdown_to_html_node(markdonw):
     blocks = markdown_to_blocks(markdonw)
+
+    nodes = []
     for block in blocks:
         blockType = block_to_block_type(block)
-        
+
+        match blockType:
+            case BlockType.QUOTE:
+                holder = []
+                for line in block:
+                    node = HTMLNode("blockquote", line)
+                    holder.append(node)
+                dad = HTMLNode("div",None, holder)
+                nodes.append(dad)
+            case BlockType.ULIST:
+                liste = []
+                for line in block:
+                    node1 = HTMLNode("li", line)
+                    liste.append(node1)
+                node2 = HTMLNode("ul", None, liste)
+                nodes.append(node2)
+            case BlockType.OLIST:
+                liste = []
+                for line in block:
+                    node1 = HTMLNode("li", line)
+                    liste.append(node1)
+                node2 = HTMLNode("ol", None, liste)
+                nodes.append(node2)
+            case BlockType.CODE:
+                node1 = HTMLNode("code", "\n".join(block))
+                node2 = HTMLNode("pre", None, [node1])
+                dad = HTMLNode("div", None, node2)
+                nodes.append(dad)
+            case BlockType.HEADING:
+                node:HTMLNode
+                if block.startswith("######"):
+                    node = HTMLNode("h6", block[6:].strip())
+                elif block[0].startswith("#####"):
+                    node = HTMLNode("h5", block[5:].strip())
+                elif block[0].startswith("####"):
+                    node = HTMLNode("h4", block[4:].strip())
+                elif block[0].startswith("###"): 
+                    node = HTMLNode("h3", block[3:].strip())
+                elif block[0].startswith("##"):
+                    node = HTMLNode("h2", block[2:].strip())
+                elif block[0].startswith("#"):
+                    node = HTMLNode("h1", block[1:].strip())
+                nodes.append(node)
+            case BlockType.PARAGRAPH:
+                node = HTMLNode("p", " ".join(block))
+                nodes.append(node)
+    parrent = HTMLNode("div",None, nodes)
+    return parrent
+#textnode to html node function nutzen

@@ -4,7 +4,7 @@ class HTMLNode():
         self.value = value
         self.children = children
         self.props = props
-    def to_html(self):
+    def to_html(self): 
         raise NotImplementedError
     def props_to_html(self):
         text = " "
