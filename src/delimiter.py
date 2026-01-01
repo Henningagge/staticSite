@@ -109,31 +109,29 @@ class BlockType(Enum):
     OLIST = "ordered_list"
     ULIST = "unordered_list"
 
-def block_to_block_type(markdown):
-    heading_match = re.findall(r"^#{1,6}",markdown)
-    if heading_match == "":
+def block_to_block_type(block):
+    lines = block.split("\n")
+
+    if block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
         return BlockType.HEADING
-    code_match = re.findall(r"```[^`]*```",markdown)
-    if code_match != "":
+    if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return BlockType.CODE
-    split_quote = markdown.split("\n")
-    is_quote = True
-    for quote in split_quote:
-        if quote[0] != ">":
-            is_quote = False
-    if is_quote == True:
+    if block.startswith(">"):
+        for line in lines:
+            if not line.startswith(">"):
+                return BlockType.PARAGRAPH
         return BlockType.QUOTE
-    is_ulist = True
-    for item in split_quote:
-        if quote[:1] != "- ":
-            is_ulist = False
-    if is_ulist == True:
+    if block.startswith("- "):
+        for line in lines:
+            if not line.startswith("- "):
+                return BlockType.PARAGRAPH
         return BlockType.ULIST
-    is_olist = True
-    for i in range(len(split_quote)):
-        if split_quote[i][:2] != f"{i+1}. ":
-            is_olist == False
-    if is_olist == True:
+    if block.startswith("1. "):
+        i = 1
+        for line in lines:
+            if not line.startswith(f"{i}. "):
+                return BlockType.PARAGRAPH
+            i += 1
         return BlockType.OLIST
     return BlockType.PARAGRAPH
 
