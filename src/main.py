@@ -9,6 +9,6 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node.__repr__())
     copy_files_recursive("./static","./docs")
-    generate_pages_recursive(base, "template.html", "docs")
+    generate_pages_recursive("content", "template.html", "docs")
 if __name__ == "__main__":
     main() 
