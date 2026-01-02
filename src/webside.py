@@ -44,8 +44,21 @@ def writeHtmlPage(template, dest_path):
     path = "/".join(pathParts[:-1])
     if not os.path.exists(path):
         os.makedirs(path)
-    with open(dest_path, "w") as file:
+    with open(f"{dest_path[:-2]}html", "w") as file:
         file.write(template)
 #todo make the public directory delete it sealf at the start of the main.sh
 
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
+
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        print(f" * {from_path} -> {dest_path}")
+        if os.path.isfile(from_path):
+            generate_page(from_path, template_path, dest_path)
+
+        else:
+            generate_pages_recursive(from_path,template_path, dest_path)

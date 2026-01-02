@@ -1,5 +1,5 @@
 from textnode import TextNode,TextType
-from webside import copy_files_recursive, generate_page
+from webside import copy_files_recursive, generate_page,generate_pages_recursive
 import shutil
 def main():
     shutil.rmtree("public")
@@ -7,6 +7,6 @@ def main():
     node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     print(node.__repr__())
     copy_files_recursive("./static","./public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 if __name__ == "__main__":
     main() 
