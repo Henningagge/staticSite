@@ -31,13 +31,21 @@ def generate_page(from_path, template_path, dest_path):
         markdownText = file.read()
     with open(template_path, "r") as file:
         template_text = file.read()
-    markdownHtml = markdown_to_html_node(markdownText)
-    html = markdownHtml.to_html()
+    markdownHtml = markdown_to_html_node(markdownText).to_html()
+
     title = extract_title(markdownText)
     template_text = template_text.replace("{{ Title }}", title)
-    template_text = template_text.replace("{{ Content }}", html)
+    template_text = template_text.replace("{{ Content }}", markdownHtml)
 
     writeHtmlPage(template_text, dest_path)
 
-def writeHtmlPage(tenmplate, dest_path):
-    pass
+def writeHtmlPage(template, dest_path):
+    pathParts = dest_path.split("/")
+    path = "/".join(pathParts[:-1])
+    if not os.path.exists(path):
+        os.makedirs(path)
+    with open(dest_path, "w") as file:
+        file.write(template)
+#todo make the public directory delete it sealf at the start of the main.sh
+
+
